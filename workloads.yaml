@@ -16,6 +16,10 @@ spec:
       containers:
       - name: queue
         image: richardchesterwood/k8s-fleetman-queue:release2
+        resources: 
+          requests:
+            memory: 50Mi
+            cpu: 100m
 
 ---
 
