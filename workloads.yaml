@@ -15,10 +15,10 @@ spec:
     spec:
       containers:
       - name: queue
-        image: richardchesterwood/k8s-fleetman-queue:release2
+        image: richardchesterwood/k8s-fleetman-queue:resources
         resources: 
           requests:
-            memory: 50Mi
+            memory: 300Mi
             cpu: 100m
 
 ---
@@ -40,10 +40,22 @@ spec:
     spec:
       containers:
       - name: position-simulator
-        image: richardchesterwood/k8s-fleetman-position-simulator:release2
+        image: richardchesterwood/k8s-fleetman-position-simulator:resources
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
+        volumeMounts:
+        - name: databse-config-volume
+          mountPath: /etc/any/directory/config
+        resources: 
+          requests:
+            memory: 200Mi
+            cpu: 100m
+      volumes:
+      - name: databse-config-volume
+        configMap:
+          name: global-database-config
+
 
 ---
 
@@ -64,10 +76,14 @@ spec:
     spec:
       containers:
       - name: position-tracker
-        image: richardchesterwood/k8s-fleetman-position-tracker:release3
+        image: richardchesterwood/k8s-fleetman-position-tracker:resources
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
+        resources: 
+          requests:
+            memory: 200Mi
+            cpu: 100m
 
 ---
 
@@ -88,10 +104,18 @@ spec:
     spec:
       containers:
       - name: api-gateway
-        image: richardchesterwood/k8s-fleetman-api-gateway:release2
+        image: richardchesterwood/k8s-fleetman-api-gateway:performance
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
+        resources: 
+          requests:
+            memory: 200Mi
+            cpu: 50m
 
 ---
 
@@ -116,3 +140,7 @@ spec:
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
+        resources: 
+          requests:
+            memory: 300Mi
+            cpu: 100m

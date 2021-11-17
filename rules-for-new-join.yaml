@@ -1,0 +1,30 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: new-joiner
+  namespace: default
+rules:
+- apiGroups: 
+  - ""
+  - "apps" 
+  resources:
+  - "*"
+  verbs:
+  - get
+  - list
+  - watch
+
+---
+
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: put-specific-user-or-users-into-new-joiner
+  namespace: default
+subjects:
+- kind: User
+  name: francis-linux-login-name
+roleRef:
+  kind: Role
+  name: new-joiner
+  apiGroup: rbac.authorization.k8s.io
